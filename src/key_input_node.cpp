@@ -44,10 +44,15 @@ int main(int argc, char **argv)
 {
 	ros::init(argc, argv, "key_input_node");
 	ros::NodeHandle n;
-	ros::Publisher pub = n.advertise<std_msgs::Bool>("/key_input_node/restart", 1000);
+	ros::Publisher pub = n.advertise<std_msgs::Bool>("/vins_restart", 1000);
+	ros::Publisher pub_imu_switch = n.advertise<std_msgs::Bool>("/vins_imu_switch", 1000);
+	ros::Publisher pub_cam_switch = n.advertise<std_msgs::Bool>("/vins_cam_switch", 1000);
 
 	ros::Rate loop_rate(10);
 	std_msgs::Bool restart;
+	std_msgs::Bool imu_switch;
+	std_msgs::Bool cam_switch;
+
 	while (ros::ok())
 	{
 		int c = 0;
@@ -57,6 +62,26 @@ int main(int argc, char **argv)
 				ROS_INFO("restart");//cout << endl << "Up" << endl;//key up
 				restart.data = true;
 				pub.publish(restart);
+				break;
+			case 'i':
+				ROS_INFO("use imu");
+				imu_switch.data = true;
+				pub_imu_switch.publish(imu_switch);
+				break;
+			case 'o':
+				ROS_INFO("disable imu");
+				imu_switch.data = false;
+				pub_imu_switch.publish(imu_switch);
+				break;
+			case 's':
+				ROS_INFO("stereo");
+				cam_switch.data = true;
+				pub_cam_switch.publish(cam_switch);
+				break;
+			case 'm':
+				ROS_INFO("mono");
+				cam_switch.data = false;
+				pub_cam_switch.publish(cam_switch);
 				break;
 			default:
 				ROS_INFO("other input");
